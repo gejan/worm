@@ -1,13 +1,8 @@
 -- Minetest Worm Mod
 -- by Gerald
 
-
-
-
-
-
-local walking_period = 2  -- seconds
-local walking_steps = 1
+local walking_period = 1  -- seconds
+local walking_steps = 4     -- needs to be bigger than 0
 
 minetest.register_craftitem("worm:spawnegg", {
   description = "worm",
@@ -18,7 +13,7 @@ minetest.register_craftitem("worm:spawnegg", {
     end
     local pos = pointed_thing.above
     local dir = 0
-    local length = 6
+    local length = itemstack:get_count()
     minetest.set_node(pos, {name = "worm:head_1", param2 = dir})
     local headtimer = minetest.get_node_timer(pos)
     pos.z = pos.z - 1
@@ -32,7 +27,7 @@ minetest.register_craftitem("worm:spawnegg", {
     headtimer:set(walking_period, 0)
     tailtimer:set(walking_period, 0)
     
-    itemstack:take_item()
+    itemstack:clear()
     return itemstack
   end,
 })
@@ -54,7 +49,7 @@ for n = 1, walking_steps do
       local facedir = node.param2
       local dirs = {
         4, 
-        facedir,
+        facedir % 4,  -- 4 -> 0 
         (facedir + 1) % 4,
         (facedir + 2) % 4,
         (facedir + 3) % 4,
@@ -95,7 +90,7 @@ for n = 1, walking_steps do
       "worm_face.png",
       "worm_side.png"
     },
-    groups = {snappy = 3},
+    groups = {snappy = 1, level = 2, not_in_creative_inventory = 1},
     damage_per_second = 10,
     on_timer = step,
     drop = "",
@@ -115,7 +110,7 @@ minetest.register_node("worm:body", {
     "worm_side.png",
     "worm_side.png"
   },
-  groups = {snappy = 3},
+  groups = {snappy = 1, level = 2, not_in_creative_inventory = 1},
   after_dig_node = function(pos, node, _, _)
     local newpos = vector.add(pos, minetest.facedir_to_dir(node.param2))
     local newnode = minetest.get_node(newpos)
@@ -195,7 +190,7 @@ for n = 1, walking_steps do
         minetest.set_node(newpos, newnode)
       end
     end,
-    groups = {snappy = 3},
+    groups = {snappy = 1, level = 2, not_in_creative_inventory = 1},
     drop = "",
   })
 
