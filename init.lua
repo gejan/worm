@@ -1,13 +1,11 @@
 -- Minetest Worm Mod
 -- by Gerald
 
-local MODNAME = "worm"
-
 local WALKING_PERIOD = 1      -- seconds
 local WALKING_STEPS = 4       -- needs to be bigger than 0
 local TAIL_PROTECTION = false -- if false check for protection only at head position 
 
-
+local MODNAME = "worm"
 
 local register_worm = function(modname, name, leftover, face, side, tail, can_move)
 
@@ -34,7 +32,6 @@ minetest.register_craftitem(modname..":"..name.."_spawnegg", {
     local length = itemstack:get_count()
     minetest.set_node(pos, {name = modname..":"..name.."_head_1", param2 = facedir})
     local headtimer = minetest.get_node_timer(pos)
-    -- pos.z = pos.z - 1
     pos = vector.subtract(pos, dir)
     local i = 0
     while i < length do
@@ -225,10 +222,8 @@ end
 end
 
 
-local worm_leftover = "air"
-if default then
-  worm_leftover = "default:dirt"
-end
+local worm_leftover = "default:dirt"
+
 register_worm(MODNAME, "worm", 
   worm_leftover, 
   "worm_face.png", 
