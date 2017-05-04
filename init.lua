@@ -142,7 +142,7 @@ minetest.register_node(modname..":"..name.."_body", {
       minetest.set_node(newpos, newnode)
       local timer = minetest.get_node_timer(newpos)
       timer:set(WALKING_PERIOD, 0)
-    elseif newnode.name:find(modname..":"..name.."_:head") == 1  then
+    elseif newnode.name:find(modname..":"..name.."_head") == 1  then
       newnode.name = "air"
       minetest.set_node(newpos, newnode)
     end
