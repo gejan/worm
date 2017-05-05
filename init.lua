@@ -251,7 +251,7 @@ end
 
 
 worm.register_worm(MODNAME, "worm", 
-  "default:dirt", 
+  "mapgen_dirt", 
   "worm_face.png", 
   "worm_side.png", 
   "worm_tail.png",
