@@ -1,5 +1,6 @@
 Minetest Worm Mod
 --------------------------
+![screenshot](https://github.com/gejan/worm/blob/master/screenshot.png?raw=true)
 
 Adds moving worms and snakes
 
