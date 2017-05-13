@@ -4,7 +4,9 @@ Minetest Worm Mod
 Adds moving worms and snakes
 
 
-Depends on nothing.
+Depends on (optional):
+default?
+flowers?
 
 
 LICENSE:
