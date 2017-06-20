@@ -8,6 +8,8 @@ local mapgen_node = {
 }
 minetest.register_node("worm:snake_head_1_mapgen", mapgen_node)
 minetest.register_node("worm:snake_tail_1_mapgen", mapgen_node)
+minetest.register_node("worm:snake_black_head_1_mapgen", mapgen_node)
+minetest.register_node("worm:snake__black_tail_1_mapgen", mapgen_node)
 minetest.register_node("worm:worm_head_1_mapgen", mapgen_node)
 minetest.register_node("worm:worm_tail_1_mapgen", mapgen_node)
 minetest.register_node("worm:eel_head_1_mapgen", mapgen_node)
@@ -40,6 +42,23 @@ minetest.register_decoration({
       {name="worm:snake_body",   param1=255, param2=3, force_place = true},
       {name="worm:snake_body",   param1=255, param2=3, force_place = true},
       {name="worm:snake_tail_1_mapgen", param1=255, param2=3, force_place = true},
+    },
+  },
+})
+
+-- Black Snake
+minetest.register_decoration({
+  deco_type = "schematic",
+  place_on = "mapgen_dirt_with_grass",
+  sidelen = 16,
+  fill_ratio = 0.0001,
+  schematic = {
+    size = {x=4, y=1, z=1},
+    data = {
+      {name="worm:snake_black_head_1_mapgen", param1=255, param2=3, force_place = true},
+      {name="worm:snake_black_body",   param1=255, param2=3, force_place = true},
+      {name="worm:snake_black_body",   param1=255, param2=3, force_place = true},
+      {name="worm:snake_black_tail_1_mapgen", param1=255, param2=3, force_place = true},
     },
   },
 })

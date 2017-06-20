@@ -14,5 +14,6 @@ worm.config.TAIL_PROTECTION = false
 local path = minetest.get_modpath("worm")
 dofile(path.."/api.lua")
 dofile(path.."/examples.lua")
+dofile(path.."/stone_eater.lua")
 dofile(path.."/swallowable_nodes.lua")
 dofile(path.."/mapgen.lua")
