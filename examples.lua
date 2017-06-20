@@ -43,6 +43,7 @@ worm.register_worm("worm", "eel", {
   tail_texture   = "eel_tail.png", 
   top_texture    = "eel_top.png",
   bottem_texture = "eel_bottem.png",
+  follow_nodes   = "group:swallowable",
   can_move = function(_, node)
     return minetest.get_node_group(node.name, "water") > 0
   end,

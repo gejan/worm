@@ -6,14 +6,12 @@ local mapgen_node = {
   drawtype = "airlike",
   groups = {not_in_creative_inventory = 1, worm_mapgen = 1},
 }
-minetest.register_node("worm:snake_head_1_mapgen", mapgen_node)
 minetest.register_node("worm:snake_tail_1_mapgen", mapgen_node)
-minetest.register_node("worm:snake_black_head_1_mapgen", mapgen_node)
-minetest.register_node("worm:snake__black_tail_1_mapgen", mapgen_node)
-minetest.register_node("worm:worm_head_1_mapgen", mapgen_node)
+minetest.register_node("worm:black_snake_tail_1_mapgen", mapgen_node)
 minetest.register_node("worm:worm_tail_1_mapgen", mapgen_node)
-minetest.register_node("worm:eel_head_1_mapgen", mapgen_node)
 minetest.register_node("worm:eel_tail_1_mapgen", mapgen_node)
+minetest.register_node("worm:caterpillar_tail_1_mapgen", mapgen_node)
+minetest.register_node("worm:maggot_tail_1_mapgen", mapgen_node)
 
 -- Replace mapgen nodes by real ones and initialize the node timer.
 minetest.register_lbm({
@@ -36,9 +34,10 @@ minetest.register_decoration({
   sidelen = 16,
   fill_ratio = 0.0001,
   schematic = {
-    size = {x=4, y=1, z=1},
+    size = {x=5, y=1, z=1},
     data = {
-      {name="worm:snake_head_1_mapgen", param1=255, param2=3, force_place = true},
+      {name="worm:snake_head_1", param1=255, param2=3, force_place = true},
+      {name="worm:snake_body",   param1=255, param2=3, force_place = true},
       {name="worm:snake_body",   param1=255, param2=3, force_place = true},
       {name="worm:snake_body",   param1=255, param2=3, force_place = true},
       {name="worm:snake_tail_1_mapgen", param1=255, param2=3, force_place = true},
@@ -55,10 +54,10 @@ minetest.register_decoration({
   schematic = {
     size = {x=4, y=1, z=1},
     data = {
-      {name="worm:snake_black_head_1_mapgen", param1=255, param2=3, force_place = true},
-      {name="worm:snake_black_body",   param1=255, param2=3, force_place = true},
-      {name="worm:snake_black_body",   param1=255, param2=3, force_place = true},
-      {name="worm:snake_black_tail_1_mapgen", param1=255, param2=3, force_place = true},
+      {name="worm:black_snake_head_1", param1=255, param2=3, force_place = true},
+      {name="worm:black_snake_body",   param1=255, param2=3, force_place = true},
+      {name="worm:black_snake_body",   param1=255, param2=3, force_place = true},
+      {name="worm:black_snake_tail_1_mapgen", param1=255, param2=3, force_place = true},
     },
   },
 })
@@ -72,10 +71,43 @@ minetest.register_decoration({
   schematic = {
     size = {x=4, y=1, z=1},
     data = {
-      {name="worm:worm_head_1_mapgen", param1=255, param2=3, force_place = true},
+      {name="worm:worm_head_1", param1=255, param2=3, force_place = true},
       {name="worm:worm_body",   param1=255, param2=3, force_place = true},
       {name="worm:worm_body",   param1=255, param2=3, force_place = true},
       {name="worm:worm_tail_1_mapgen", param1=255, param2=3, force_place = true},
+    },
+  },
+})
+
+-- Caterpillar
+minetest.register_decoration({
+  deco_type = "schematic",
+  place_on = "mapgen_dirt_with_grass",
+  sidelen = 16,
+  fill_ratio = 0.0001,
+  schematic = {
+    size = {x=4, y=1, z=1},
+    data = {
+      {name="worm:caterpillar_head_1", param1=255, param2=3, force_place = true},
+      {name="worm:caterpillar_body",   param1=255, param2=3, force_place = true},
+      {name="worm:caterpillar_body",   param1=255, param2=3, force_place = true},
+      {name="worm:caterpillar_tail_1_mapgen", param1=255, param2=3, force_place = true},
+    },
+  },
+})
+
+-- Worm
+minetest.register_decoration({
+  deco_type = "schematic",
+  place_on = "mapgen_dirt_with_grass",
+  sidelen = 16,
+  fill_ratio = 0.00003,
+  schematic = {
+    size = {x=3, y=1, z=1},
+    data = {
+      {name="worm:maggot_head_1", param1=255, param2=3, force_place = true},
+      {name="worm:maggot_body",   param1=255, param2=3, force_place = true},
+      {name="worm:maggot_tail_1_mapgen", param1=255, param2=3, force_place = true},
     },
   },
 })
@@ -90,7 +122,7 @@ minetest.register_decoration({
   schematic = {
     size = {x=4, y=3, z=1},
     data = {
-      {name="worm:eel_head_1_mapgen", param1=255, param2=3, force_place = true},
+      {name="worm:eel_head_1", param1=255, param2=3, force_place = true},
       {name="worm:eel_body",   param1=255, param2=3, force_place = true},
       {name="worm:eel_body",   param1=255, param2=3, force_place = true},
       {name="worm:eel_tail_1_mapgen", param1=255, param2=3, force_place = true},

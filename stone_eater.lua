@@ -8,24 +8,15 @@ if default then
   drop = {  
     max_items = 2,
     items = {
-      {
-        items = {"default:coal_lump"},
-        rarity = 1,
-      },
-      {
-        items = {"default:gold_lump"},
-        rarity = 2,
-      },
-      {
-        items = {"default:iron_lump"},
-        rarity = 2,
-      },
-      {
-        items = {"default:copper_lump"},
-        rarity = 2,
-      },
-    },
+      {items = {"default:coal_lump"},   rarity = 1},
+      {items = {"default:gold_lump"},   rarity = 2},
+      {items = {"default:iron_lump"},   rarity = 2},
+      {items = {"default:copper_lump"}, rarity = 2},
+    }
   }
+  if minetest.registered_craftitems["default:tin_lump"] then
+    table.insert(drop.items, {items = {"default:tin_lump"}, rarity = 2})
+  end 
 end
 local anm = {
   type = "vertical_frames",
@@ -81,7 +72,6 @@ minetest.register_lbm({
     --minetest.emerge_area(pos, vector.add(pos, dir4))
     print("[worm]"..node.name.." spawned at "..pos.x..", "..pos.y..", "..pos.z)
     minetest.swap_node(pos, node)
-    local headtimer = minetest.get_node_timer(pos)
     node.name = "worm:stone_eater_body"
     pos = vector.subtract(pos, dir)
     minetest.set_node(pos, node)
@@ -93,7 +83,6 @@ minetest.register_lbm({
     pos = vector.subtract(pos, dir)
     minetest.set_node(pos, node)
     local tailtimer = minetest.get_node_timer(pos)
-    headtimer:set(worm.config.WALKING_PERIOD, 0)
     tailtimer:set(worm.config.WALKING_PERIOD, 0)
     print("tail at "..pos.x..", "..pos.y..", "..pos.z)
   end,
