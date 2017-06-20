@@ -48,7 +48,7 @@ minetest.register_decoration({
 -- Black Snake
 minetest.register_decoration({
   deco_type = "schematic",
-  place_on = "mapgen_dirt_with_grass",
+  place_on = "mapgen_desert_sand",
   sidelen = 16,
   fill_ratio = 0.0001,
   schematic = {
