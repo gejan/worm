@@ -96,7 +96,6 @@ worm.register_worm = function (modname, name, data)
         name = modname..":"..name.."_head_1",
         param2 = facedir
       })
-      local headtimer = minetest.get_node_timer(pos)
       pos = vector.subtract(pos, dir)
       local i = 0
       while i < length do
@@ -121,7 +120,6 @@ worm.register_worm = function (modname, name, data)
         param2 = facedir
       })
       local tailtimer = minetest.get_node_timer(pos)
-      headtimer:set(WALKING_PERIOD, 0)
       tailtimer:set(WALKING_PERIOD, 0)
       itemstack:take_item(i)
       return itemstack
@@ -132,18 +130,13 @@ worm.register_worm = function (modname, name, data)
   for n = 1, data.walking_steps do
     -- Called on nodetimer
     -- Incomplete head -> Update the head
-    local step = function(pos, _)
-      local node = minetest.get_node(pos)
+    local step = function(pos, node)
       node.name = modname..":"..name.."_head_"..(n+1)
       minetest.swap_node(pos, node)
-      local timer = minetest.get_node_timer(pos)
-      timer:set(WALKING_PERIOD, 0)
-      return false
     end
     -- Check for attack at first step
     if data.attack_damage and n == 1 then
-      step = function(pos, _)
-        local node = minetest.get_node(pos)     
+      step = function(pos, node)    
         local dir = minetest.facedir_to_dir(node.param2)
         local bite_pos = vector.add(pos, dir)
         if data.can_move(bite_pos, minetest.get_node(bite_pos)) then
@@ -151,26 +144,20 @@ worm.register_worm = function (modname, name, data)
           if objects[1] then
             node.name = modname..":"..name.."_body"
             minetest.swap_node(pos, node)
-            node.name = modname..":"..name.."_attack"
+            node.name = modname..":"..name.."_head_attack"
             minetest.set_node(bite_pos, node)
             objects[1]:punch(objects[1], nil,  -- This is a workaround, first argument should be nil
                 {damage_groups = data.attack_damage,}, dir)
-            local timer = minetest.get_node_timer(bite_pos)
-            timer:set(WALKING_PERIOD, 0)
-            return false
+            return
           end
         end
         node.name = modname..":"..name.."_head_"..(n+1)
         minetest.swap_node(pos, node)
-        local timer = minetest.get_node_timer(pos)
-        timer:set(WALKING_PERIOD, 0)
-        return false
       end
     end
     -- Complete head -> Move head to a different position
     if n == data.walking_steps then
-      step = function(pos, _)
-        local node = minetest.get_node(pos)
+      step = function(pos, node)
         local facedir = node.param2
         local dirs         -- Hierarchy of preferred directions
         if data.follow_nodes then    -- follow food nodes
@@ -308,9 +295,7 @@ worm.register_worm = function (modname, name, data)
                 name = modname..":"..name.."_body",
                 param2 = dirs[i]
               })
-              local timer = minetest.get_node_timer(newpos)
-              timer:set(WALKING_PERIOD, 0)
-              return false
+              return
             elseif data.can_move(newpos, newnode) then
               minetest.set_node(newpos, {
                 name = modname..":"..name.."_head_1", 
@@ -320,14 +305,11 @@ worm.register_worm = function (modname, name, data)
                 name = modname..":"..name.."_body",
                 param2 = dirs[i]
               })
-              local timer = minetest.get_node_timer(newpos)
-              timer:set(WALKING_PERIOD, 0)
-              return false
+              return
             end
           end
         end
         -- Worm stuck
-        return true
       end
     end
     local drawtype
@@ -355,7 +337,7 @@ worm.register_worm = function (modname, name, data)
       },
       groups = {snappy = 1, level = 2, not_in_creative_inventory = 1},
       damage_per_second = data.node_damage,
-      on_timer = step,
+      wormstep = step,
       drop = "",
     }) 
   end
@@ -391,6 +373,18 @@ worm.register_worm = function (modname, name, data)
     drop = data.drop,
   })
   
+  local call_head = function (pos, node)
+    local dir
+    repeat
+      dir  = minetest.facedir_to_dir(node.param2)
+      pos  = vector.add(pos, dir)
+      node = minetest.get_node(pos)
+    until node.name ~= modname..":"..name.."_body"
+    if node.name:find(modname..":"..name.."_head") then
+      minetest.registered_nodes[node.name].wormstep(pos, node)
+    end
+  end
+  
   -- Definition of tail nodes
   for n = 1, data.walking_steps do
     -- Called on nodetimer
@@ -401,11 +395,12 @@ worm.register_worm = function (modname, name, data)
       minetest.set_node(pos, node)
       local timer = minetest.get_node_timer(pos)
       timer:set(WALKING_PERIOD, 0)
+      call_head(pos, node)
       return false
     end
     -- Empty tail -> Update the head
     if n == data.walking_steps then
-    step =  function(pos, elapsed)
+    step =  function(pos, _)
         local node = minetest.get_node(pos)
         local facedir = node.param2
         local newpos = vector.add(pos, minetest.facedir_to_dir(facedir))
@@ -419,6 +414,7 @@ worm.register_worm = function (modname, name, data)
           minetest.set_node(newpos, {name = "air"})
         end
         minetest.set_node(pos, {name = data.leftover})
+        call_head(newpos, newnode)
         return false
       end
     end
@@ -466,7 +462,7 @@ worm.register_worm = function (modname, name, data)
   
   --Definition of the special attack head node
   if data.attack_damage then
-    minetest.register_node(modname..":"..name.."_attack", {
+    minetest.register_node(modname..":"..name.."_head_attack", {
       description = name.." attacking head",
       paramtype = "light",
       paramtype2 = "facedir",
@@ -479,8 +475,7 @@ worm.register_worm = function (modname, name, data)
         data.side_tile
       },
       groups = {snappy = 1, level = 2, not_in_creative_inventory = 1},
-      on_timer = function(pos)
-        local node = minetest.get_node(pos)
+      wormstep = function(pos, node)
         local pos_b = vector.subtract(pos, minetest.facedir_to_dir(node.param2)) 
         local node_b = minetest.get_node(pos_b)
         node.name = "air"
